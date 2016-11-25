@@ -1,0 +1,7 @@
+change the format in matlab output 
+
+let matlab output different pairs
+
+output format:
+
+W P alpha w1~w4 p1~p4 Tp1~Tp4 Tt1~Tt4 L1~L4 E1~E4 L E eval
