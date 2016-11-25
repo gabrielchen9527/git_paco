@@ -1,0 +1,27 @@
+function  obj=objfunga(x,W,alpha,power,datasize,bandwidth,a,b,c,rtt)
+
+for i=1:4
+    E(i)=x(i)*power*datasize/bandwidth(i);
+    
+    
+    if x(i)==0
+        precision(i)=0;
+        la(i)=0;
+    else 
+        precision(i)=x(i+4)/100;
+
+    	if precision(i)==0.9
+		precision(i)=0.91;
+    	end
+
+	    if precision(i)==0.94
+		precision(i)=0.95;
+    	end
+
+        la(i)=datasize*x(i)/bandwidth(i)+rtt(i)+((a(i)*precision(i)+b(i))*x(i)+c(i));
+    end
+       
+end
+
+Energy=sum(E);
+obj=Energy+alpha*max(la);

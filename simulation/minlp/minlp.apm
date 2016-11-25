@@ -1,0 +1,63 @@
+! Mixed Integer Nonlinear Programming Test Problem
+! min p(x,y)
+! s.t. Linear Constraints
+!      A*x <= b
+!      Aeq*x = beq
+!      lb <= x <= ub
+!      Nonlinear Constraints
+!      f(y) <= 0
+!      g(y) = 0 
+!      lower <= y <= upper
+
+! Declare integer variables first
+! Default upper and lower bounds are overrided with
+!  new_ub and new_lb in MATLAB code
+Variables
+  x[1:8] >=0, <=100
+End Variables
+
+Parameters
+a[1]=3640.3585015273297 
+a[2]=3133.0909981072296 
+a[3]=3420.4209066546705 
+a[4]=8958.1758212926925
+b[1]=-2408.3941384156947 
+b[2]=-2204.3061030527897 
+b[3]=-2192.6697411030514 
+b[4]=-5678.8262738704216
+c[1]=921.59277777777606 
+c[2]=1396.5355555555552 
+c[3]=1137.7086111111075 
+c[4]=575.51666666667006
+power=944
+bandwidth[1]=435.63104797752447 
+bandwidth[2]=97.63968697856356 
+bandwidth[3]=439.03253324254985 
+bandwidth[4]=486.08667984624208
+datasize=30
+rtt[1]=39.78 
+rtt[2]=30.96 
+rtt[3]=29.54 
+rtt[4]=33.20
+End Parameters
+
+
+Intermediates
+E[1]=x[1]*power*datasize/bandwidth[1] 
+E[2]=x[2]*power*datasize/bandwidth[2] 
+E[3]=x[3]*power*datasize/bandwidth[3] 
+E[4]=x[4]*power*datasize/bandwidth[4] 
+E=E[1]+E[2]+E[3]+E[4]
+L[1:4]=datasize*x[1:4]/bandwidth[1:4]+rtt[1:4]+(a[1:4]*x[5:8]/100+b[1:4])*x[1:4]+c[1:4]
+La=max[L]
+
+
+obj = E+150*La
+End Intermediates
+
+Equations
+  ! Linear or Nonlinear Contraints
+  x[1]*x[5]+x[2]*x[6]+x[3]*x[7]+x[4]*x[8] >= 100*b
+  x[1]+x[2]+x[3]+x[4]=100
+  minimize obj
+End Equations
