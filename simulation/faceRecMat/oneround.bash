@@ -1,5 +1,11 @@
 #!/bin/bash
 
+mv rawresult rawresult-bk
+mkdir -p rawresult/ga
+mkdir -p rawresult/even
+mkdir -p rawresult/inverse
+mkdir -p rawresult/loadbalance
+
 workload=$2
 precision=$3
 alpha=$4
@@ -19,70 +25,49 @@ if [ "$#" -ne 4 ]; then
 
 case "$1" in
     ga)
-        echo "now testing our strategy with workload=$2, precision=$3, alpha=$4"
-        sed -i "1s/.*/W=$workload/" runga.m
-        sed -i "2s/.*/R=$precision/" runga.m
-        sed -i "3s/.*/a=$alpha/" runga.m
-        matlab -nojvm <runga.m
+        matlab -nojvm -r "gaScheduling($workload,$precision,$alpha);"
         if [ $? -ne 1 ]
         then
             printf "\n matlab failed! please check!\n"
+	    exit
         fi
         ;;
     even)
-        echo "now testing even distribution with workload=$2, precision=$3, alpha=$4"
-        sed -i "1s/.*/W=$workload/" runeven.m
-        sed -i "2s/.*/R=$precision/" runeven.m
-        sed -i "3s/.*/a=$alpha/" runeven.m
-        matlab -nojvm<runeven.m
+        matlab -nojvm -r "even($workload,$precision,$alpha);"
         if [ $? -ne 1 ]
         then
             printf "\n matlab failed! please check!\n"
+	    exit
         fi
         ;;
     inverse)
-        echo "now testing inverse proportional distribution with workload=$2, precision=$3, alpha=$4"
-        sed -i "1s/.*/W=$workload/" runinverse.m
-        sed -i "2s/.*/R=$precision/" runinverse.m
-        sed -i "3s/.*/a=$alpha/" runinverse.m
-        matlab -nojvm<runinverse.m
+        matlab -nojvm -r "inverse($workload,$precision,$alpha);"
         if [ $? -ne 1 ]
         then
             printf "\n matlab failed! please check!\n"
+	    exit
         fi
         ;;
     loadbalance)
-        echo "now testing load balancingwith workload=$2, precision=$3, alpha=$4 "
-        sed -i "1s/.*/W=$workload/" runloadbalance.m
-        sed -i "2s/.*/R=$precision/" runloadbalance.m
-        sed -i "3s/.*/a=$alpha/" runloadbalance.m
-        matlab -nojvm<runloadbalance.m
+        matlab -nojvm -r "loadbalance($workload,$precision,$alpha);"
         if [ $? -ne 1 ]
         then
             printf "\n matlab failed! please check!\n"
+	    exit
         fi
         ;;
     all)
-        echo "now testing all strategies with workload=$2, precision=$3, alpha=$4"
-        sed -i "1s/.*/W=$workload/" runga.m
-        sed -i "2s/.*/R=$precision/" runga.m
-        sed -i "3s/.*/a=$alpha/" runga.m
-        sed -i "1s/.*/W=$workload/" runeven.m
-        sed -i "2s/.*/R=$precision/" runeven.m
-        sed -i "3s/.*/a=$alpha/" runeven.m
-        sed -i "1s/.*/W=$workload/" runinverse.m
-        sed -i "2s/.*/R=$precision/" runinverse.m
-        sed -i "3s/.*/a=$alpha/" runinverse.m
-        sed -i "1s/.*/W=$workload/" runloadbalance.m
-        sed -i "2s/.*/R=$precision/" runloadbalance.m
-        sed -i "3s/.*/a=$alpha/" runloadbalance.m
-        matlab -nojvm<runga.m &
-        matlab -nojvm<runeven.m &
-        matlab -nojvm<runinverse.m &
-        matlab -nojvm<runloadbalance.m &
+        matlab -nojvm -r "gaScheduling($workload,$precision,$alpha);" &
+        matlab -nojvm -r "even($workload,$precision,$alpha);" &
+        matlab -nojvm -r "inverse($workload,$precision,$alpha);" &
+        matlab -nojvm -r "loadbalance($workload,$precision,$alpha);" &
         wait
-       # cat <(echo "ga") ./result/ga-breakdown-$2-$3-$4 <(echo "even") ./result/even-breakdown-$2-$3-$4 <(echo "inverse") ./result/inverse-breakdown-$2-$3-$4 <(echo "loadbalance") ./result/loadbalance-breakdown-$2-$3-$4>./breakdown/breakdown-$2-$3-$4
-       # cat  ./result/ga-workload-eval-$2-$3-$4  ./result/even-workload-eval-$2-$3-$4 ./result/inverse-workload-eval-$2-$3-$4 ./result/loadbalance-workload-eval-$2-$3-$4>./workload-eval/workload-eval-$2-$3-$4
+# comment the following line because need to get the exit status of background process        
+#	if [ $? -ne 1 ]
+#        then
+#            printf "\n matlab failed! please check!\n"
+#	    exit
+#        fi
         ;;
      *)
          echo "incorrect input arguments"

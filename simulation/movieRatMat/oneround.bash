@@ -19,7 +19,7 @@ if [ "$#" -ne 4 ]; then
 
 case "$1" in
     ga)
-        matlab -nojvm -r "gaScheduling($workload,$precision,$alpha);" >/dev/null
+        matlab -nojvm -r "gaScheduling($workload,$precision,$alpha);"
         if [ $? -ne 1 ]
         then
             printf "\n matlab failed! please check!\n"
@@ -27,7 +27,7 @@ case "$1" in
         fi
         ;;
     even)
-        matlab -nojvm -r "even($workload,$precision,$alpha);" >/dev/null
+        matlab -nojvm -r "even($workload,$precision,$alpha);"
         if [ $? -ne 1 ]
         then
             printf "\n matlab failed! please check!\n"
@@ -35,7 +35,7 @@ case "$1" in
         fi
         ;;
     inverse)
-        matlab -nojvm -r "inverse($workload,$precision,$alpha);" >/dev/null
+        matlab -nojvm -r "inverse($workload,$precision,$alpha);"
         if [ $? -ne 1 ]
         then
             printf "\n matlab failed! please check!\n"
@@ -43,7 +43,7 @@ case "$1" in
         fi
         ;;
     loadbalance)
-        matlab -nojvm -r "loadbalance($workload,$precision,$alpha);" >/dev/null
+        matlab -nojvm -r "loadbalance($workload,$precision,$alpha);"
         if [ $? -ne 1 ]
         then
             printf "\n matlab failed! please check!\n"
@@ -51,10 +51,10 @@ case "$1" in
         fi
         ;;
     all)
-        matlab -nojvm -r "gaScheduling($workload,$precision,$alpha);" >/dev/null &
-        matlab -nojvm -r "even($workload,$precision,$alpha);" >/dev/null &
-        matlab -nojvm -r "inverse($workload,$precision,$alpha);"  >/dev/null &
-        matlab -nojvm -r "loadbalance($workload,$precision,$alpha);" >/dev/null &
+        matlab -nojvm -r "gaScheduling($workload,$precision,$alpha);" &
+        matlab -nojvm -r "even($workload,$precision,$alpha);" &
+        matlab -nojvm -r "inverse($workload,$precision,$alpha);" &
+        matlab -nojvm -r "loadbalance($workload,$precision,$alpha);" &
         wait
 # comment the following line because need to get the exit status of background process        
 #	if [ $? -ne 1 ]
