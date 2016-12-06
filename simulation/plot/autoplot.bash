@@ -27,10 +27,9 @@ then
 fi
 
 
-rootdir=~/workspace/paco_git/simulation/
-rawresultPath=${rootdir}movieRatMat/rawresult-11-10-18-48/
+rootdir=~/workspace/git_paco/simulation/
+rawresultPath=${rootdir}faceRecMat/rawresult-11-28-17-53/
 plotdir=${rootdir}plot/
-echo $rawresultPath
 drawscala(){
 precision="$1"
 alpha="$2"

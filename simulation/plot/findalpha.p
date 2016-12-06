@@ -3,7 +3,6 @@ set output outfile
 set title  alphatitle
 set xlabel "alpha"
 set ylabel "evaluation"
-#set xr [0:500]
 set autoscale
 set style line 1 linecolor rgb 'red' lt 1 lw 1 pt 1 ps 1
 set style line 2 linecolor rgb 'blue' lt 2  lw 1 pt 1 ps 1

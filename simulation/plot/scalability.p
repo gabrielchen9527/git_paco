@@ -4,10 +4,10 @@ set title  scalatitle
 set xlabel "workload"
 set ylabel "evaluation"
 set autoscale
-set style line 1 linecolor rgb '#000000' lt 1 lw 5 pt 1 ps 1
-set style line 2 linecolor rgb '#888888' lt 2  lw 5 pt 1 ps 1
-set style line 3 linecolor rgb '#666666' lt 5 lw 5 pt 1 ps 1
-set style line 4 linecolor rgb '#aaaaaa' lt 3 lw 5 pt 1 ps 1
+set style line 1 linecolor rgb 'red' lt 1 lw 1 pt 1 ps 1
+set style line 2 linecolor rgb 'blue' lt 2  lw 1 pt 1 ps 1
+set style line 3 linecolor rgb 'violet' lt 4 lw 1 pt 1 ps 1
+set style line 4 linecolor rgb 'black' lt 3 lw 1 pt 1 ps 1
 
 
 #plot "ga-raw-0.88-20" u 1:30 title 'MobiQoR' w linespoints,\
@@ -15,8 +15,8 @@ set style line 4 linecolor rgb '#aaaaaa' lt 3 lw 5 pt 1 ps 1
 #     "inverse-raw-0.88-20" u 1:30 title 'inverse' w linespoints,\
 #     "loadbalance-raw-0.88-20" u 1:30 title 'loadbalance' w linespoints
 
-plot datafile1 u 1:30 title 'MobiQoR' w linespoints,\
-     datafile2 u 1:30 title 'Even' w linespoints,\
-     datafile3 u 1:30 title 'inverse' w linespoints,\
-     datafile4 u 1:30 title 'loadbalance' w linespoints
+plot datafile1 u 1:30 title 'MobiQoR' w linespoints smooth csplines ls 1,\
+     datafile2 u 1:30 title 'Even' w linespoints smooth csplines ls 2,\
+     datafile3 u 1:30 title 'inverse' w linespoints smooth csplines ls 3,\
+     datafile4 u 1:30 title 'loadbalance' w linespoints smooth csplines ls 4
 

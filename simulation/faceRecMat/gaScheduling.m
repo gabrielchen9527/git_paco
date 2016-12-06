@@ -11,18 +11,18 @@ A=[];
 B=[];
 Aeq=[];
 Beq=[];
-lb=[0 0 0 0 82 82 82 82];
-ub=[W W W W 92 92 92 92];
-intcon=1:8;
-fitness=@(x)objfunga(x,W,alpha,power,datasize,bandwidth,a,b,c,rtt);
-constraints=@(x)constraintsga(x,R,W);
-x=ga(fitness,8,A,B,Aeq,Beq,lb,ub,constraints,intcon);
+lb=[0 0 0 82 82 82 82];
+ub=[W W W 92 92 92 92];
+intcon=1:7;
+fitness=@(x) objfunga(x,W,alpha,power,datasize,bandwidth,a,b,c,rtt);
 
+x=ga(fitness,7,A,B,Aeq,Beq,lb,ub,@(x)constraintsga(x,R,W),intcon);
 workload=zeros(1,4);precision=zeros(1,4);latency=zeros(1,4);E=zeros(1,4);transT=zeros(1,4);procT=zeros(1,4);
 
-for i=1:4
+for i=1:3
     workload(i)=x(i);
 end
+workload(4)=W-workload(1)-workload(2)-workload(3);
 
 for i=1:4
     E(i)=workload(i)*power*datasize/bandwidth(i);
@@ -34,7 +34,7 @@ for i=1:4
         precision(i)=0;
         latency(i)=0;
     else 
-        precision(i)=x(i+4)/100;
+        precision(i)=x(i+3)/100;
         transT(i)=datasize*workload(i)/bandwidth(i)+rtt(i);
         procT(i)=(a(i)*precision(i)+b(i))*workload(i)+c(i);
         latency(i)=transT(i)+procT(i);
