@@ -1,4 +1,4 @@
-function [c,ceq]=constraints(x,R,W)
+function [c,ceq]=constraints(x,R,W,servers)
 %Nonlinear inequality constraints
 % input x is a vector of all variables, the first three elements in x are
 % workloads of first three servers, the workload of the fourth server is
@@ -7,18 +7,24 @@ function [c,ceq]=constraints(x,R,W)
 
 %now initialize the elements and represent them in a readable way
 
-w=zeros(4,1); %w is vector of workloads, four elements
-r=zeros(4,1); % r is vector of precision, four elements
+w=zeros(servers,1); %w is vector of workloads, four elements
+r=zeros(servers,1); % r is vector of precision, four elements
 
-
-w(1)=x(1);w(2)=x(2);w(3)=x(3);w(4)=W-x(1)-x(2)-x(3);
-r(1)=x(4)/100;r(2)=x(5)/100;r(3)=x(6)/100;r(4)=x(7)/100;
-
+assigned = 0;
+c(1) = 0;
+c(2) = 0;
+for i = 1:servers-1
+    w(i) = x(i);
+    assigned = assigned + w(i);
+    r(i) = x(servers - 1 + i) / 100;
+    c(1) = c(1) - w(i) * r(i);
+    c(2) = c(2) + w(i);
+end
+w(servers) = W - assigned;
+r(servers) = x(2 * servers - 1) / 100;
 %c(1) represents the integrated precision condition, sigma(wi*ri)>=RW
-
-c(1)=-w(1)*r(1)-w(2)*r(2)-w(3)*r(3)-w(4)*r(4)+R*W;
-
-c(2)=w(1)+w(2)+w(3)-W;
+c(1) = c(1) - w(servers) * r(servers) + R * W;
+c(2) = c(2) - W;
 
 %here nonlinear equality condition should be empty, 
 ceq=[];
