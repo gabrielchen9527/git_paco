@@ -19,24 +19,24 @@ disp(numOfCopy);
 
 a = repmat(a, numOfCopy, 1);
 a = reshape(a, 1, servers);
-disp('DEBUG: a ');
-disp(a)
+% disp('DEBUG: a ');
+% disp(a)
 b = repmat(b, numOfCopy, 1);
 b = reshape(b, 1, servers);
-disp('DEBUG: b ');
-disp(b)
+% disp('DEBUG: b ');
+% disp(b)
 c = repmat(c, numOfCopy, 1);
 c = reshape(c, 1, servers);
-disp('DEBUG: c ');
-disp(c)
+% disp('DEBUG: c ');
+% disp(c)
 bandwidth = repmat(bandwidth, numOfCopy, 1);
 bandwidth = reshape(bandwidth, 1, servers);
-disp('DEBUG: bandwidth ');
-disp(bandwidth)
+% disp('DEBUG: bandwidth ');
+% disp(bandwidth)
 rtt = repmat(rtt, numOfCopy, 1);
 rtt = reshape(rtt, 1, servers);
-disp('DEBUG: rtt ');
-disp(rtt)
+% disp('DEBUG: rtt ');
+% disp(rtt)
 
 A=[];
 B=[];
@@ -48,15 +48,15 @@ for i = servers : 2 * servers - 1
     lb(i) = 82;
     ub(i) = 92;
 end
-disp('DEBUG: lb ');
-disp(lb);
-disp('DEBUG: ub ');
-disp(ub);
+% disp('DEBUG: lb ');
+% disp(lb);
+% disp('DEBUG: ub ');
+% disp(ub);
 
 intcon=1 : 2 * servers - 1;
 fitness=@(x) objfunga(x,W,alpha,power,datasize,bandwidth,a,b,c,rtt,servers);
-
-x=ga(fitness,2 * servers - 1,A,B,Aeq,Beq,lb,ub,@(x)constraintsga(x,R,W,servers),intcon);
+[x,fval,exitflag]=ga(fitness,2 * servers - 1,A,B,Aeq,Beq,lb,ub,@(x)constraintsga(x,R,W,servers),intcon);
+fprintf('exitflag: %d\n', exitflag);
 workload=zeros(1,servers);
 precision=zeros(1,servers);
 latency=zeros(1,servers);
@@ -134,15 +134,15 @@ format = strcat(format, '\n');
 fprintf(fileID, format, P);
 fclose(fileID);
 
-disp('W:');disp(W);
-disp('R:');disp(R);
-disp('alpha:');disp(alpha);
-disp('workload:');disp(workload);
-disp('precision:');disp(precision);
-disp('transT:');disp(transT);
-disp('procT:');disp(procT);
-disp('latency:');disp(latency);
-disp('E:');disp(E);
-disp('result:');disp(result);
+disp('DEBUG: W:');disp(W);
+disp('DEBUG: R:');disp(R);
+disp('DEBUG: alpha:');disp(alpha);
+disp('DEBUG: workload:');disp(workload);
+disp('DEBUG: precision:');disp(precision);
+disp('DEBUG: transT:');disp(transT);
+disp('DEBUG: procT:');disp(procT);
+disp('DEBUG: latency:');disp(latency);
+disp('DEBUG: E:');disp(E);
+disp('DEBUG: result:');disp(result);
 
 exit(1);
