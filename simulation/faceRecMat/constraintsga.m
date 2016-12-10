@@ -10,21 +10,20 @@ function [c,ceq]=constraints(x,R,W,servers)
 w=zeros(servers,1); %w is vector of workloads, four elements
 r=zeros(servers,1); % r is vector of precision, four elements
 
-assigned = 0;
-c(1) = 0;
-c(2) = 0;
-for i = 1:servers-1
+sumWR = 0;
+sumW = 0;
+for i = 1:servers
     w(i) = x(i);
-    assigned = assigned + w(i);
-    r(i) = x(servers - 1 + i) / 100;
-    c(1) = c(1) - w(i) * r(i);
-    c(2) = c(2) + w(i);
+    r(i) = x(servers + i) / 100;
+    sumWR = sumWR - w(i) * r(i);
+    sumW = sumW + w(i);
 end
-w(servers) = W - assigned;
-r(servers) = x(2 * servers - 1) / 100;
 %c(1) represents the integrated precision condition, sigma(wi*ri)>=RW
-c(1) = c(1) - w(servers) * r(servers) + R * W;
-c(2) = c(2) - W;
+c(1) = sumWR + R * W;
+c(2) = sumW - W;
+c(3) = W - sumW;
+% disp('DEBUG: c(1)');disp(c(1));
+% disp('DEBUG: c(2)');disp(c(2));
 
 %here nonlinear equality condition should be empty, 
 ceq=[];

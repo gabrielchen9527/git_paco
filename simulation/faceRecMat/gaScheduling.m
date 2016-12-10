@@ -38,13 +38,15 @@ rtt = reshape(rtt, 1, servers);
 % disp('DEBUG: rtt ');
 % disp(rtt)
 
+varcon = 2 * servers;
+
 A=[];
 B=[];
 Aeq=[];
 Beq=[];
-lb = zeros(1, 2 * servers - 1);
-ub = W * ones(1, 2 * servers - 1);
-for i = servers : 2 * servers - 1
+lb = zeros(1, varcon);
+ub = W * ones(1, varcon);
+for i = servers + 1 : varcon
     lb(i) = 82;
     ub(i) = 92;
 end
@@ -53,9 +55,9 @@ end
 % disp('DEBUG: ub ');
 % disp(ub);
 
-intcon=1 : 2 * servers - 1;
+intcon=1 : varcon; 
 fitness=@(x) objfunga(x,W,alpha,power,datasize,bandwidth,a,b,c,rtt,servers);
-[x,fval,exitflag]=ga(fitness,2 * servers - 1,A,B,Aeq,Beq,lb,ub,@(x)constraintsga(x,R,W,servers),intcon);
+[x,fval,exitflag]=ga(fitness, varcon,A,B,Aeq,Beq,lb,ub,@(x)constraintsga(x,R,W,servers),intcon);
 fprintf('exitflag: %d\n', exitflag);
 workload=zeros(1,servers);
 precision=zeros(1,servers);
@@ -64,12 +66,9 @@ E=zeros(1,servers);
 transT=zeros(1,servers);
 procT=zeros(1,servers);
 
-assigned = 0;
-for i=1:servers - 1
+for i=1:servers
     workload(i)=x(i);
-    assigned = assigned + workload(i);
 end
-workload(servers) = W - assigned;
 
 for i=1:servers
     E(i)=workload(i)*power*datasize/bandwidth(i);
@@ -81,7 +80,7 @@ for i=1:servers
         precision(i)=0;
         latency(i)=0;
     else 
-        precision(i)=x(i + servers - 1)/100;
+        precision(i)=x(i + servers)/100;
         transT(i)=datasize*workload(i)/bandwidth(i)+rtt(i);
         procT(i)=(a(i)*precision(i)+b(i))*workload(i)+c(i);
         latency(i)=transT(i)+procT(i);
@@ -93,6 +92,10 @@ energy=sum(E);
 result=energy+alpha*max(latency);
 
 P=[W;R;alpha;workload';precision';transT';procT';latency';E';max(latency);sum(E);result];
+
+if abs(W - sum(workload)) >= 1
+    fprintf('assigned total number of workload %d\n', sum(workload));
+end
 
 filename = ['rawresult/ga/ga-raw-' num2str(W) '-' num2str(R) '-' num2str(alpha) '-' num2str(servers)];
 fileID = fopen(filename,'W');
